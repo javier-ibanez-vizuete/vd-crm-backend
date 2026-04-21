@@ -1,0 +1,32 @@
+import "dotenv/config.js";
+import mongoose from "mongoose";
+
+const DB_URL = process.env.MONGO_URI || "";
+
+const cleanModels = (): void => {
+    mongoose.modelNames().forEach((modelName: string) => {
+        mongoose.model(modelName).schema.set("toJSON", {
+            transform: (_doc: mongoose.Document, ret: Record<string, unknown>) => {
+                ret.id = (ret._id as mongoose.Types.ObjectId).toString();
+                delete ret.__v;
+                delete ret._id;
+            }
+        })
+    })
+}
+
+const connect = async (): Promise<void> => {
+    try {
+        const db = await mongoose.connect(DB_URL);
+        const { name, host } = db.connection;
+        console.log(`Data Base Connected: ${name} in ${host}`)
+        cleanModels();
+    } catch (error) {
+        console.error("Error conectandose a la base de datos", error);
+    }
+}
+
+export default {
+    DB_URL,
+    connect,
+}
