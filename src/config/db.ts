@@ -6,6 +6,7 @@ const DB_URL = process.env.MONGO_URI || "";
 const cleanModels = (): void => {
     mongoose.modelNames().forEach((modelName: string) => {
         mongoose.model(modelName).schema.set("toJSON", {
+            virtuals: true,
             transform: (_doc: mongoose.Document, ret: Record<string, unknown>) => {
                 ret.id = (ret._id as mongoose.Types.ObjectId).toString();
                 delete ret.__v;

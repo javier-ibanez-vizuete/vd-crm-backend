@@ -9,9 +9,9 @@
         "start": "node dist/index.js",
         "dev": "nodemon --watch src --ext ts --exec \"tsc && node dist/index.js\"",
         "usersSeed": "tsx dist/api/users/users.seed.js",
-        "loadsSeed": "tsx dist/api/loads/loads.seed.js",
-        "recordsSeed": "tsx dist/api/records/records.seed.js",
-        "callsSeed": "tsx dist/api/calls/calls.seed.js"
+        "rolesSeed": "tsx dist/api/roles/roles.seed.js",
+        "teamsSeed": "tsx dist/api/teams/teams.seed.js",
+        "officesSeed": "tsx dist/api/offices/offices.seed.js"
     },
     "keywords": [],
     "author": "",

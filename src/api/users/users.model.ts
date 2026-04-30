@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { UserStatus, UserType } from "./users.types.js";
 
 const userSchema: Schema<UserType> = new Schema({
@@ -16,7 +16,18 @@ const userSchema: Schema<UserType> = new Schema({
     },
     email: {
         type: String,
+        unique: true,
+        trim: true,
+        lowercase: true,
+        match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "El formato del campo 'correo electrónico' no es valido"],
+        required: [true, "El campo 'correo electrónico' es obligatorio"],
+        minLength: [5, "El campo 'correo electrónico' es demasiado corto 'min:5'"],
+        maxLength: [50, "El campo 'correo electrónico es demasiado largo 'max:50'"]
+    },
+    emailToSave: {
+        type: String,
         index: true,
+        select: false,
         unique: true,
         trim: true,
         lowercase: true,
@@ -33,7 +44,9 @@ const userSchema: Schema<UserType> = new Schema({
         maxLength: [50, "Campo contraseña demasiado largo 'max:50'"]
     },
     role: {
-        type: String //TODO: PONER TIPO ROLE CUANDO SE CREE
+        type: Schema.Types.ObjectId,
+        ref: "roles",
+        required: [true, "El campo Role es Obligatorio"]
     },
     status: {
         type: String,
@@ -45,14 +58,28 @@ const userSchema: Schema<UserType> = new Schema({
         default: 0,
         min: 0,
     },
+    manager: {
+        type: Schema.Types.ObjectId,
+        ref: "users"
+    },
     team: {
-        type: String //TODO: PONER TIPO TEAM CUANDO SE CREE EL TIPO TEAM
+        type: Schema.Types.ObjectId,
+        ref: "teams"
     },
     office: {
         type: String //TODO: PONER TIPO OFFICE CUANDO SE CREE EL TIPO OFFICE
     },
     capabilities: {
         type: [String],
-        lowercase: true
+        lowercase: true,
+        default: []
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
+}, {
+    timestamps: true
 })
+
+export const Users = mongoose.model("users", userSchema)
